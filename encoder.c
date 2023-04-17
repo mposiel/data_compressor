@@ -3,6 +3,7 @@
 //
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "encoder.h"
 
@@ -42,6 +43,8 @@ int encode(char *filename1, char *filename2) {
     int size;
     struct node *node_heap = char_freq(in, &size);
     if (node_heap == NULL) {
+        fclose(in);
+        fclose(out);
         return 3;
     }
     sort_by_freq(node_heap, size);
@@ -57,27 +60,58 @@ int encode(char *filename1, char *filename2) {
         sort_by_freq(node_heap, size);
     }
 
+    int size_of_txt = node_heap->freq;
+
+    fwrite(&size_of_txt, sizeof(int), 1, out);
+
     int err1 = write_tree_to_bin(node_heap, out);
     if (err1 == 1) {
+        fclose(in);
+        fclose(out);
         return 1;
     }
 
 
-    int size_of_txt = node_heap->freq;
+    union buffer buf;
+    buf.byte = 0;
+    int bits_in_buf = 0;
 
-    struct buffer buf;
 
-    int j = 0;
     for (int i = 0; i < size_of_txt; ++i) {
-        char *code = code_of_char(node_heap,fgetc(in));
-        if(code==NULL) {
+        char c = fgetc(in);
+        char *code = code_of_char(node_heap, c);
+        if (code == NULL) {
+            fclose(in);
+            fclose(out);
             return 1;
         }
         int code_size = strlen(code);
-        
+
+
+        for (int j = 0; j < code_size; ++j) {
+            if (bits_in_buf == 8) {
+                fwrite(&buf, sizeof(buf), 1, out);
+                buf.byte = 0;
+                bits_in_buf = 0;
+            }
+            if (code[j] == '0') {
+                buf.bits.bit7 = 0;
+            } else {
+                buf.bits.bit7 = 1;
+            }
+            buf.byte <<= 1;
+            bits_in_buf++;
+        }
+
+        if (bits_in_buf > 0) {
+            buf.byte <<= (8 - bits_in_buf);
+            fwrite(&buf, sizeof(buf), 1, out);
+        }
+
     }
 
-
+    fclose(in);
+    fclose(out);
     return 0;
 }
 
@@ -172,10 +206,10 @@ int write_tree_to_bin(struct node *n, FILE *f) {
     if (n == NULL) {
         return 1;
     }
-    fwrite(n->is_leaf, sizeof(int), 1, f);
+    fwrite(&(n->is_leaf), sizeof(int), 1, f);
 
     if (n->is_leaf == 1) {
-        fwrite(n->data, sizeof(char), 1, f);
+        fwrite(&(n->data), sizeof(char), 1, f);
     } else {
         write_tree_to_bin(n->left, f);
         write_tree_to_bin(n->right, f);
@@ -188,8 +222,7 @@ char *code_of_char(struct node *root, char ch) {
         return NULL;
     }
 
-    if (root->left == NULL && root->right == NULL && root->ch == ch) {
-
+    if (root->left == NULL && root->right == NULL && root->data == ch) {
         char *code = (char *) malloc(sizeof(char));
         code[0] = '\0';
         return code;
