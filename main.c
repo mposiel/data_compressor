@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "file_extension.h"
+#include "decoder.h"
+#include "encoder.h"
 
 
 int main() {
@@ -20,10 +23,27 @@ int main() {
     }
 
 
-    printf("Enter name of the file(max 40 characters):");
+    printf("Enter name of the file(max 20 characters):");
     scanf("%40s", filename1);
 
     while (getchar() != '\n');
+
+    if(choice == 'd' || choice == 'D') {
+        if(valid_type(filename1)!=1) {
+            printf("Incorrect file format");
+            return 3;
+        }
+
+        char *filename2;
+
+        int err1 = decode(filename1,filename2);
+
+    }
+
+
+
+
+
 
     // ADD SUFFIX AT THE END OF OUTPUT FILENAME
     // ADD ERROR HANDLING

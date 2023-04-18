@@ -3,4 +3,4 @@ project(data_compressor C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(data_compressor main.c encoder.c encoder.h decoder.c decoder.h)
+add_executable(data_compressor main.c encoder.c encoder.h decoder.c decoder.h file_extension.c file_extension.h)

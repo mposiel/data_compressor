@@ -25,17 +25,22 @@ int decode(char *filename1, char *filename2) {
     FILE *out = fopen(filename2, "w");
 
     if (out == NULL) {
+        fclose(in);
         return 2;
     }
 
     int size;
     if (fread(&size, sizeof(int), 1, in) <= 0) {
+        fclose(in);
+        fclose(out);
         return 4;
     }
 
     struct node *root = read_huffman_tree(in);
 
     if (root == NULL) {
+        fclose(in);
+        fclose(out);
         return 3;
     }
 
@@ -43,21 +48,30 @@ int decode(char *filename1, char *filename2) {
     int count = 0;
 
     for (int i = 0; i < size; ++i) {
-        struct node cur;
-        cur.left = root->left;
-        cur.right = root->right;
-        cur.freq = root->freq;
-        cur.data = root->data;
-        cur.is_leaf = root->is_leaf;
-        fread(&buf.byte,sizeof(union buffer),1,in);
-        while(cur.is_leaf != 1) {
-            if(buf.bits.bit0)
+        struct node cur = *root;
+
+        fread(&buf.byte, sizeof(union buffer), 1, in);
+
+        while (cur.is_leaf != 1) {
+            if (buf.bits.bit7) {
+                cur = *(cur.right);
+            } else {
+                cur = *(cur.left);
+            }
+            count++;
+            if (count == 8) {
+                count = 0;
+                fread(&buf.byte, sizeof(union buffer), 1, in);
+            } else {
+                buf.byte <<= 1;
+            }
         }
 
+        fputc(cur.data, out);
     }
 
-
-
+    fclose(in);
+    fclose(out);
 
     return 0;
 }
