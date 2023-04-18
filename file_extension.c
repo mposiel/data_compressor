@@ -41,8 +41,8 @@ char *filename_encoded(char *filename1) {
     }
     strcpy(filename2, filename1);
     *(filename2 + size - 1) = 'n';
-    *(filename2 + size - 1) = 'i';
-    *(filename2 + size - 1) = 'b';
+    *(filename2 + size - 2) = 'i';
+    *(filename2 + size - 3) = 'b';
     return filename2;
 }
 
@@ -57,8 +57,8 @@ char *filename_decoded(char *filename1) {
     }
     strcpy(filename2, filename1);
     *(filename2 + size - 1) = 't';
-    *(filename2 + size - 1) = 'x';
-    *(filename2 + size - 1) = 't';
+    *(filename2 + size - 2) = 'x';
+    *(filename2 + size - 3) = 't';
     return filename2;
 }
 

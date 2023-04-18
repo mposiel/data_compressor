@@ -73,6 +73,12 @@ build CMakeFiles/data_compressor.dir/file_extension.c.o: C_COMPILER__data_compre
   OBJECT_DIR = CMakeFiles/data_compressor.dir
   OBJECT_FILE_DIR = CMakeFiles/data_compressor.dir
 
+build CMakeFiles/data_compressor.dir/file_size.c.o: C_COMPILER__data_compressor_Debug /home/maks/CLionProjects/data_compressor/file_size.c || cmake_object_order_depends_target_data_compressor
+  DEP_FILE = CMakeFiles/data_compressor.dir/file_size.c.o.d
+  FLAGS = -g -fdiagnostics-color=always -std=gnu99
+  OBJECT_DIR = CMakeFiles/data_compressor.dir
+  OBJECT_FILE_DIR = CMakeFiles/data_compressor.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target data_compressor
@@ -81,7 +87,7 @@ build CMakeFiles/data_compressor.dir/file_extension.c.o: C_COMPILER__data_compre
 #############################################
 # Link the executable data_compressor
 
-build data_compressor: C_EXECUTABLE_LINKER__data_compressor_Debug CMakeFiles/data_compressor.dir/main.c.o CMakeFiles/data_compressor.dir/encoder.c.o CMakeFiles/data_compressor.dir/decoder.c.o CMakeFiles/data_compressor.dir/file_extension.c.o
+build data_compressor: C_EXECUTABLE_LINKER__data_compressor_Debug CMakeFiles/data_compressor.dir/main.c.o CMakeFiles/data_compressor.dir/encoder.c.o CMakeFiles/data_compressor.dir/decoder.c.o CMakeFiles/data_compressor.dir/file_extension.c.o CMakeFiles/data_compressor.dir/file_size.c.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/data_compressor.dir
   POST_BUILD = :

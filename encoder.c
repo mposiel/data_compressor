@@ -45,7 +45,7 @@ int encode(char *filename1, char *filename2) {
     if (node_heap == NULL) {
         fclose(in);
         fclose(out);
-        return 3;
+        return 5;
     }
     sort_by_freq(node_heap, size);
 
