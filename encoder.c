@@ -87,16 +87,16 @@ int encode(char *filename1, char *filename2) {
     buf.byte = 0;
     int bits_in_buf = 0;
 
-    fseek(in,0,SEEK_SET);
+    fseek(in, 0, SEEK_SET);
     for (int i = 0; i < size_of_txt; ++i) {
-        char c = (char)fgetc(in);
+        char c = (char) fgetc(in);
         char *code = code_of_char(node_heap, c);
         if (code == NULL) {
             fclose(in);
             fclose(out);
             return 1;
         }
-        int code_size = (int)strlen(code);
+        int code_size = (int) strlen(code);
 
 
         for (int j = 0; j < code_size; ++j) {
@@ -110,7 +110,9 @@ int encode(char *filename1, char *filename2) {
             } else {
                 buf.bits.bit0 = 1;
             }
-            buf.byte = buf.byte << 1;
+            if (bits_in_buf != 7) {
+                buf.byte = buf.byte << 1;
+            }
             bits_in_buf++;
         }
 

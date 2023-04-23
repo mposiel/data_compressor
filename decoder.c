@@ -43,11 +43,11 @@ int decode(char *filename1, char *filename2) {
 
     union buffer buf;
     int count = 0;
+    fread(&buf.byte, sizeof(union buffer), 1, in);
 
     for (int i = 0; i < size; ++i) {
         struct node cur = *root;
 
-        fread(&buf.byte, sizeof(union buffer), 1, in);
 
         while (cur.is_leaf != 1) {
             if (buf.bits.bit7) {
@@ -75,8 +75,8 @@ int decode(char *filename1, char *filename2) {
 
 
 struct node *read_huffman_tree(FILE *f) {
-    int is_leaf;
-    fread(&is_leaf, sizeof(int), 1, f);
+    unsigned char is_leaf;
+    fread(&is_leaf, sizeof(unsigned char), 1, f);
 
     struct node *n = (struct node *) malloc(sizeof(struct node));
     if (n == NULL) {
