@@ -53,14 +53,14 @@ int main() {
             printf("File corrupted");
             return 5;
         }
-        printf("File saved");
+
 
         long size_before = file_size(filename1);
         float size_before_in_kB = (float) size_before / 1000;
         long size_after = file_size(filename2);
         float size_after_in_kB = (float) size_after / 1000;
 
-        printf("File saved!\nSize before: %.2f\nSize after: %.2f", size_before_in_kB, size_after_in_kB);
+        printf("File saved!\nSize before: %ld B\nSize after: %ld B", size_before, size_after);
 
     } else if (choice == 'e' || choice == 'E') {
         if (valid_type(filename1) != 2) {
@@ -80,7 +80,7 @@ int main() {
             printf("Couldn't open file");
             return 2;
         } else if (err1 == 3) {
-            printf("Failed to allocaaaaaate memory");
+            printf("Failed to allocate memory");
             return 8;
         } else if (err1 == 4) {
             printf("File corrupted");
@@ -92,7 +92,7 @@ int main() {
         long size_after = file_size(filename2);
         float size_after_in_kB = (float) size_after / 1000;
 
-        printf("File saved!\nSize before: %.2f\nSize after: %.2f", size_before_in_kB, size_after_in_kB);
+        printf("File saved!\nSize before: %ld B\nSize after: %ld B", size_before, size_after);
 
     }
 

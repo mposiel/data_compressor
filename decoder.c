@@ -30,11 +30,8 @@ int decode(char *filename1, char *filename2) {
     }
 
     int size;
-    if (fread(&size, sizeof(int), 1, in) <= 0) {
-        fclose(in);
-        fclose(out);
-        return 4;
-    }
+    fread(&size, sizeof(int), 1, in);
+
 
     struct node *root = read_huffman_tree(in);
 

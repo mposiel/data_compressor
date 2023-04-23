@@ -16,7 +16,7 @@
 // struktura pliku:
 // 1. ilość znaków (int)
 // 2. drzewo
-// 3. zakodoway tekst
+// 3. zakodowany tekst
 
 
 int encode(char *filename1, char *filename2) {
@@ -42,29 +42,40 @@ int encode(char *filename1, char *filename2) {
 
     int size;
     struct node *node_heap = char_freq(in, &size);
+
     if (node_heap == NULL) {
         fclose(in);
         fclose(out);
         return 5;
     }
+
+
     sort_by_freq(node_heap, size);
+
 
     while (size > 1) {
         struct node cur;
         cur.freq = node_heap->freq + (node_heap + 1)->freq;
         cur.right = (node_heap + 1);
-        cur.left = node_heap;
         cur.is_leaf = 0;
+
+        cur.left = malloc(sizeof(struct node));
+        if (cur.left == NULL) {
+
+            return 3;
+        }
+        *cur.left = *node_heap;
         node_heap = delete_first_element(node_heap, &size);
         node_heap[0] = cur;
         sort_by_freq(node_heap, size);
     }
 
+
     int size_of_txt = node_heap->freq;
 
     fwrite(&size_of_txt, sizeof(int), 1, out);
 
-    int err1 = write_tree_to_bin(node_heap, out);
+    int err1 = write_huffman_tree(node_heap, out);
     if (err1 == 1) {
         fclose(in);
         fclose(out);
@@ -76,16 +87,16 @@ int encode(char *filename1, char *filename2) {
     buf.byte = 0;
     int bits_in_buf = 0;
 
-
+    fseek(in,0,SEEK_SET);
     for (int i = 0; i < size_of_txt; ++i) {
-        char c = fgetc(in);
+        char c = (char)fgetc(in);
         char *code = code_of_char(node_heap, c);
         if (code == NULL) {
             fclose(in);
             fclose(out);
             return 1;
         }
-        int code_size = strlen(code);
+        int code_size = (int)strlen(code);
 
 
         for (int j = 0; j < code_size; ++j) {
@@ -95,19 +106,19 @@ int encode(char *filename1, char *filename2) {
                 bits_in_buf = 0;
             }
             if (code[j] == '0') {
-                buf.bits.bit7 = 0;
+                buf.bits.bit0 = 0;
             } else {
-                buf.bits.bit7 = 1;
+                buf.bits.bit0 = 1;
             }
-            buf.byte <<= 1;
+            buf.byte = buf.byte << 1;
             bits_in_buf++;
         }
 
-        if (bits_in_buf > 0) {
-            buf.byte <<= (8 - bits_in_buf);
-            fwrite(&buf, sizeof(buf), 1, out);
-        }
 
+    }
+    if (bits_in_buf > 0) {
+        buf.byte <<= (8 - bits_in_buf);
+        fwrite(&buf, sizeof(buf), 1, out);
     }
 
     fclose(in);
@@ -116,10 +127,14 @@ int encode(char *filename1, char *filename2) {
 }
 
 struct node *char_freq(FILE *f, int *size) {
-
-    if (f == NULL) {
+    if (size == NULL) {
         return NULL;
     }
+
+    struct char_frequencies {
+        int data;
+        int freq;
+    };
 
     struct char_frequencies *freq_tab = malloc(256 * sizeof(struct char_frequencies));
     if (freq_tab == NULL) {
@@ -131,24 +146,25 @@ struct node *char_freq(FILE *f, int *size) {
     }
 
     char c;
-    while (1) {
-        c = fgetc(f);
-        if (c == EOF) {
-            break;
-        }
+    while ((c = fgetc(f)) != EOF) {
         (freq_tab + c)->freq += 1;
     }
 
-
+    *size = 0;
     for (int i = 0; i < 256; ++i) {
         if ((freq_tab + i)->freq != 0) {
             (*size)++;
         }
     }
 
-    struct node *node_tab = malloc(*size * sizeof(struct node));
+    if (*size == 0) {
+        free(freq_tab);
+        return NULL;
+    }
 
+    struct node *node_tab = malloc(*size * sizeof(struct node));
     if (node_tab == NULL) {
+        free(freq_tab);
         return NULL;
     }
 
@@ -157,14 +173,14 @@ struct node *char_freq(FILE *f, int *size) {
         if ((freq_tab + i)->freq != 0) {
             (node_tab + j)->freq = (freq_tab + i)->freq;
             (node_tab + j)->data = (freq_tab + i)->data;
-            (node_tab + j)->right = NULL;
             (node_tab + j)->left = NULL;
+            (node_tab + j)->right = NULL;
             (node_tab + j)->is_leaf = 1;
             j++;
         }
     }
 
-
+    free(freq_tab);
     return node_tab;
 }
 
@@ -173,7 +189,7 @@ int compare(const void *a, const void *b) {
     struct node *nodeA = (struct node *) a;
     struct node *nodeB = (struct node *) b;
 
-    return (nodeB->freq - nodeA->freq);
+    return (nodeA->freq - nodeB->freq);
 }
 
 void sort_by_freq(struct node *tab, int size) {
@@ -202,20 +218,31 @@ struct node *delete_first_element(struct node *tab, int *size) {
     return new_tab;
 }
 
-int write_tree_to_bin(struct node *n, FILE *f) {
-    if (n == NULL) {
+int write_huffman_tree(struct node *node, FILE *out) {
+    if (node == NULL) {
+        return 0;
+    }
+
+    if (node->is_leaf) {
+        unsigned char bit = 1;
+        fwrite(&bit, sizeof(unsigned char), 1, out);
+        fwrite(&(node->data), sizeof(char), 1, out);
+        return 0;
+    }
+
+    unsigned char bit = 0;
+    fwrite(&bit, sizeof(unsigned char), 1, out);
+
+    int err1 = write_huffman_tree(node->left, out);
+    int err2 = write_huffman_tree(node->right, out);
+
+    if (err1 == 1 || err2 == 1) {
         return 1;
     }
-    fwrite(&(n->is_leaf), sizeof(int), 1, f);
 
-    if (n->is_leaf == 1) {
-        fwrite(&(n->data), sizeof(char), 1, f);
-    } else {
-        write_tree_to_bin(n->left, f);
-        write_tree_to_bin(n->right, f);
-    }
     return 0;
 }
+
 
 char *code_of_char(struct node *root, char ch) {
     if (root == NULL) {
@@ -254,8 +281,5 @@ char *code_of_char(struct node *root, char ch) {
 
     return NULL;
 }
-
-
-
 
 

@@ -5,11 +5,6 @@
 #ifndef DATA_COMPRESSOR_ENCODER_H
 #define DATA_COMPRESSOR_ENCODER_H
 
-struct char_frequencies {
-    char data;
-    int freq;
-};
-
 
 
 struct node {
@@ -42,7 +37,7 @@ void sort_by_freq(struct node *tab, int size);
 
 struct node *delete_first_element(struct node *tab, int *size);
 
-int write_tree_to_bin(struct node *n, FILE *f);
+int write_huffman_tree(struct node *node, FILE *out);
 
 char *code_of_char(struct node *root, char ch);
 
