@@ -119,7 +119,7 @@ int encode(char *filename1, char *filename2) {
 
     }
     if (bits_in_buf > 0) {
-        buf.byte <<= (8 - bits_in_buf);
+        buf.byte <<= (7 - bits_in_buf);
         fwrite(&buf, sizeof(buf), 1, out);
     }
 
