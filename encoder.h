@@ -1,10 +1,5 @@
-//
-// Created by maks on 16.04.23.
-//
-
 #ifndef DATA_COMPRESSOR_ENCODER_H
 #define DATA_COMPRESSOR_ENCODER_H
-
 
 
 struct node {

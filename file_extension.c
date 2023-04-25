@@ -1,9 +1,4 @@
-//
-// Created by maks on 17.04.23.
-//
-
 #include "file_extension.h"
-#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 

@@ -1,7 +1,3 @@
-//
-// Created by maks on 17.04.23.
-//
-
 #include "decoder.h"
 #include <stdio.h>
 #include <stdlib.h>

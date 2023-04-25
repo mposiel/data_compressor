@@ -56,10 +56,7 @@ int main() {
 
 
         long size_before = file_size(filename1);
-        float size_before_in_kB = (float) size_before / 1000;
         long size_after = file_size(filename2);
-        float size_after_in_kB = (float) size_after / 1000;
-
         printf("File saved!\nSize before: %ld B\nSize after: %ld B", size_before, size_after);
 
     } else if (choice == 'e' || choice == 'E') {
@@ -88,11 +85,16 @@ int main() {
         }
 
         long size_before = file_size(filename1);
-        float size_before_in_kB = (float) size_before / 1000;
         long size_after = file_size(filename2);
-        float size_after_in_kB = (float) size_after / 1000;
 
-        printf("File saved!\nSize before: %ld B\nSize after: %ld B", size_before, size_after);
+        if (size_after < size_before) {
+            float reduced = 100 - (((float) size_after / (float) size_before) * 100);
+            printf("File saved!\nSize before: %ld B\nSize after: %ld B\nSize reduced by: %.2f %%", size_before,
+                   size_after, reduced);
+        } else {
+            printf("File saved!\nSize before: %ld B\nSize after: %ld B\n", size_before, size_after);
+        }
+
 
     }
 
