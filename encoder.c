@@ -12,6 +12,8 @@
 //3 - failed to allocate memory
 //4 - file corrupted
 
+
+
 int encode(char *filename1, char *filename2) {
     if (filename1 == NULL || filename2 == NULL) {
         return 1;
