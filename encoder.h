@@ -39,6 +39,6 @@ struct node *delete_first_element(struct node *tab, int *size);
 
 int write_huffman_tree(struct node *node, FILE *out);
 
-char *code_of_char(struct node *root, char ch);
+char *code_of_char(struct node *root, unsigned char ch);
 
 #endif //DATA_COMPRESSOR_ENCODER_H

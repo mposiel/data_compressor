@@ -46,7 +46,7 @@ int encode(char *filename1, char *filename2) {
     if (node_heap == NULL) {
         fclose(in);
         fclose(out);
-        return 5;
+        return 4;
     }
 
 
@@ -61,7 +61,6 @@ int encode(char *filename1, char *filename2) {
 
         cur.left = malloc(sizeof(struct node));
         if (cur.left == NULL) {
-
             return 3;
         }
         *cur.left = *node_heap;
@@ -89,7 +88,7 @@ int encode(char *filename1, char *filename2) {
 
     fseek(in, 0, SEEK_SET);
     for (int i = 0; i < size_of_txt; ++i) {
-        char c = (char) fgetc(in);
+        unsigned char c = fgetc(in);
         char *code = code_of_char(node_heap, c);
         if (code == NULL) {
             fclose(in);
@@ -134,7 +133,7 @@ struct node *char_freq(FILE *f, int *size) {
     }
 
     struct char_frequencies {
-        int data;
+        char data;
         int freq;
     };
 
@@ -142,18 +141,21 @@ struct node *char_freq(FILE *f, int *size) {
     if (freq_tab == NULL) {
         return NULL;
     }
-    for (int i = 0; i < 256; ++i) {
+    for (int i = 0; i < 128; ++i) {
         (freq_tab + i)->data = i;
         (freq_tab + i)->freq = 0;
     }
 
-    char c;
+    int c;
     while ((c = fgetc(f)) != EOF) {
+        if (c < -1 || c > 127) {
+            return NULL;
+        }
         (freq_tab + c)->freq += 1;
     }
 
     *size = 0;
-    for (int i = 0; i < 256; ++i) {
+    for (int i = 0; i < 128; ++i) {
         if ((freq_tab + i)->freq != 0) {
             (*size)++;
         }
@@ -228,7 +230,7 @@ int write_huffman_tree(struct node *node, FILE *out) {
     if (node->is_leaf) {
         unsigned char bit = 1;
         fwrite(&bit, sizeof(unsigned char), 1, out);
-        fwrite(&(node->data), sizeof(char), 1, out);
+        fwrite(&(node->data), sizeof(unsigned char), 1, out);
         return 0;
     }
 
@@ -246,7 +248,7 @@ int write_huffman_tree(struct node *node, FILE *out) {
 }
 
 
-char *code_of_char(struct node *root, char ch) {
+char *code_of_char(struct node *root, unsigned char ch) {
     if (root == NULL) {
         return NULL;
     }
