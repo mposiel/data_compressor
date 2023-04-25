@@ -11,12 +11,12 @@ To decompress the compressed file, the algorithm reads the bit stream and follow
 
 ## Performance
 
-This program compresses text files to about 50% of their original size on average.
+This program compresses text files to about 50% of their original size on average. When a file is compressed, the program displays before and after size.
 
 ## Limitations
 This implementation of the Huffman coding algorithm has the following limitations:
 
-It only works with text files, that contain 0 - 127 ASCII codes.
+It only works with text files, that contain regular ASCII codes.
 
 It may not always produce a compressed file that is smaller than the original file.
 
