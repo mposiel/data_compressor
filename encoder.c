@@ -13,12 +13,6 @@
 //4 - file corrupted
 
 
-// struktura pliku:
-// 1. ilość znaków (int)
-// 2. drzewo
-// 3. zakodowany tekst
-
-
 int encode(char *filename1, char *filename2) {
     if (filename1 == NULL || filename2 == NULL) {
         return 1;

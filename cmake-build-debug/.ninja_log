@@ -1,0 +1,8 @@
+# ninja log v5
+36	54	1682420459304738116	data_compressor	ebbd8a4e8c872359
+1	36	1682420459288738555	CMakeFiles/data_compressor.dir/encoder.c.o	ab27fc9e4a302005
+0	143	1681811755914195746	CMakeFiles/data_compressor.dir/file_extension.c.o	45b41381b63899ce
+0	46	1681811849938045331	build.ninja	82d2a335d6445629
+1	26	1681811356912956450	CMakeFiles/data_compressor.dir/file_size.c.o	8bc8b57aca3d7257
+1	36	1682420459288738555	CMakeFiles/data_compressor.dir/decoder.c.o	7f62e9794b9b40ed
+1	36	1682420459288738555	CMakeFiles/data_compressor.dir/main.c.o	6ba5f04ed538da35
