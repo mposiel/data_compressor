@@ -20,6 +20,7 @@ int main() {
 
     if (choice != 'e' && choice != 'E' && choice != 'd' && choice != 'D') {
         printf("Incorrect input data");
+        free(filename1);
         return 2;
     }
 
@@ -32,12 +33,14 @@ int main() {
     if (choice == 'd' || choice == 'D') {
         if (valid_type(filename1) != 1) {
             printf("Incorrect file format");
+            free(filename1);
             return 3;
         }
 
         char *filename2 = filename_decoded(filename1);
         if (filename2 == NULL) {
             printf("Failed to allocate memory");
+            free(filename1);
             return 8;
         }
 
@@ -45,12 +48,18 @@ int main() {
         int err1 = decode(filename1, filename2);
         if (err1 == 2) {
             printf("Couldn't open file");
+            free(filename1);
+            free(filename2);
             return 2;
         } else if (err1 == 3) {
             printf("Failed to allocate memory");
+            free(filename1);
+            free(filename2);
             return 8;
         } else if (err1 == 4) {
             printf("File corrupted");
+            free(filename1);
+            free(filename2);
             return 5;
         }
 
@@ -62,12 +71,14 @@ int main() {
     } else if (choice == 'e' || choice == 'E') {
         if (valid_type(filename1) != 2) {
             printf("Incorrect file format");
+            free(filename1);
             return 3;
         }
 
         char *filename2 = filename_encoded(filename1);
         if (filename2 == NULL) {
             printf("Failed to allocate memory");
+            free(filename1);
             return 8;
         }
 
@@ -75,12 +86,18 @@ int main() {
         int err1 = encode(filename1, filename2);
         if (err1 == 2) {
             printf("Couldn't open file");
+            free(filename1);
+            free(filename2);
             return 2;
         } else if (err1 == 3) {
             printf("Failed to allocate memory");
+            free(filename1);
+            free(filename2);
             return 8;
         } else if (err1 == 4) {
             printf("File corrupted");
+            free(filename1);
+            free(filename2);
             return 5;
         }
 
@@ -99,12 +116,8 @@ int main() {
     }
 
 
-
-    // ADD SUFFIX AT THE END OF OUTPUT FILENAME
-    // ADD ERROR HANDLING
-    // ADD SIZES OF FILES AND HOW MUCH % IT REDUCED
-    // ADD PATH OF THE NEW FILE
-
+    free(filename1);
+    free(filename2);
 
 
     return 0;

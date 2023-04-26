@@ -53,6 +53,9 @@ int encode(char *filename1, char *filename2) {
 
         cur.left = malloc(sizeof(struct node));
         if (cur.left == NULL) {
+            fclose(in);
+            fclose(out);
+            free(node_heap);
             return 3;
         }
         *cur.left = *node_heap;
@@ -70,6 +73,7 @@ int encode(char *filename1, char *filename2) {
     if (err1 == 1) {
         fclose(in);
         fclose(out);
+        free(node_heap);
         return 1;
     }
 
@@ -85,6 +89,7 @@ int encode(char *filename1, char *filename2) {
         if (code == NULL) {
             fclose(in);
             fclose(out);
+            free(node_heap);
             return 1;
         }
         int code_size = (int) strlen(code);
@@ -106,7 +111,7 @@ int encode(char *filename1, char *filename2) {
             }
             bits_in_buf++;
         }
-
+    free(code);
 
     }
     if (bits_in_buf > 0) {
@@ -116,6 +121,7 @@ int encode(char *filename1, char *filename2) {
 
     fclose(in);
     fclose(out);
+    free(node_heap);
     return 0;
 }
 
